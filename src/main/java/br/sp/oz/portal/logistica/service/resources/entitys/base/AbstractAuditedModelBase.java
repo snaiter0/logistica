@@ -1,4 +1,4 @@
-package br.sp.oz.portal.logistica.service.resources;
+package br.sp.oz.portal.logistica.service.resources.entitys.base;
 
 import java.time.LocalDateTime;
 
@@ -13,26 +13,20 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper=false)
 @Data
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public abstract class AbstractAuditedModelBase {
+public abstract class AbstractAuditedModelBase extends AbstractModelBase {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id", nullable = false, unique = true)
-	protected Long id;
-	
 	@Column(name = "dat_insercao")
 	@DateTimeFormat(iso = ISO.DATE_TIME)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
@@ -44,7 +38,6 @@ public abstract class AbstractAuditedModelBase {
 	@Column(name = "dat_hora_ult_modif_reg")
 	@LastModifiedDate
 	protected LocalDateTime dataHoraUltimaModificacaoRegistro;
-	
 	
 	@LastModifiedBy
 	@Column(name = "usuario_ult_modif")
