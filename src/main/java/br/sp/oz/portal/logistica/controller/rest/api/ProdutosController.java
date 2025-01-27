@@ -1,15 +1,20 @@
 package br.sp.oz.portal.logistica.controller.rest.api;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.sp.oz.portal.logistica.controller.resources.request.AtualizarProdutosRequest;
@@ -49,5 +54,35 @@ public class ProdutosController {
         @RequestBody AtualizarProdutosRequest atualizarProduto) {
         return new ResponseEntity<>(logisticaService.atualizarProduto(atualizarProduto), HttpStatus.OK);
     }
+    
+    @Operation(
+            summary = "Recupera lista de produtos por data",
+            description = "Recupera lista de produtos no banco de dados do sistema a partir da data no corpo da requisição.")
+    @GetMapping(value = "produto", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Set<Produtos>> recuperarExtratoProdutosPorData(
+    @Parameter(description = "Data dos produto a serem recuperados", required = true) 
+    @RequestParam("dataProduto") LocalDateTime dataProduto){
+    	return new ResponseEntity<>(logisticaService.recuperarProdutos(dataProduto), HttpStatus.OK);
+    }
+    
+    
+    @Operation(
+            summary = "Recupera lista de produtos por data dia",
+            description = "Recupera lista de produtos no banco de dados do sistema a partir da data do dia no corpo da requisição.")
+    @GetMapping(value = "produto/dia", produces = MediaType.APPLICATION_JSON_VALUE)    
+    public ResponseEntity<Set<Produtos>> recuperarProdutosPorDataDia(
+    	    @Parameter(description = "Data dia dos produto a serem recuperados", required = true) 
+    	    @RequestParam("dataDiaProduto") LocalDate dataDiaProduto){
+    	    	return new ResponseEntity<>(logisticaService.recuperarProdutos(dataDiaProduto), HttpStatus.OK);
+    	    }
+    
+    @Operation(
+            summary = "Recupera lista de produtos dentro de uma janela de datas",
+            description = "Recupera lista de produtos no banco de dados do sistema a partir de uma janela de datas no corpo da requisição.")
+    @GetMapping(value = "produto/janela-data", produces = MediaType.APPLICATION_JSON_VALUE)    
+    public ResponseEntity<Set<Produtos>> recuperarProdutosPorJanelaData(
+    	    @Parameter(description = "Janela de datas de dias dos produto a serem recuperados", required = true) 
+    	    @RequestParam("dataDiaProduto") LocalDateTime dataInicioProduto, @RequestParam("dataFimProduto") LocalDateTime dataFimProduto){
+    	    	return new ResponseEntity<>(logisticaService.recuperarProdutos(dataInicioProduto, dataFimProduto), HttpStatus.OK);
+    	    }
 }
-

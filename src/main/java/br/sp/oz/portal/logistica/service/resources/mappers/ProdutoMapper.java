@@ -1,5 +1,7 @@
 
 package br.sp.oz.portal.logistica.service.resources.mappers;
+import java.util.Set;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants.ComponentModel;
 
@@ -11,5 +13,6 @@ public interface ProdutoMapper {
 
 	
 	Produtos produtoDtoToProduto(ProdutoDto produtoRequest);
-	
+
+	Set<ProdutoDto> produtosToProdutosDto(Set<Produtos> produto);
 }
