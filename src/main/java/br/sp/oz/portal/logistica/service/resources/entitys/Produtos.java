@@ -4,6 +4,11 @@ package br.sp.oz.portal.logistica.service.resources.entitys;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import br.sp.oz.portal.logistica.service.resources.entitys.base.AbstractAuditedModelBase;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,7 +26,7 @@ import lombok.RequiredArgsConstructor;
 @Builder
 @Data
 
-@Table(name = "Produto")
+@Table(name = "produto", schema = "dbo")
 @Entity
 public class Produtos extends AbstractAuditedModelBase{
 	
@@ -29,9 +34,13 @@ public class Produtos extends AbstractAuditedModelBase{
 	private String nome;
 	
 	@Column(name = "dat_hora_entrada", nullable = true)
+	@DateTimeFormat(iso = ISO.DATE_TIME)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
 	private LocalDateTime dataHoraEntrada;
 
 	@Column(name = "dat_hora_saida", nullable = true)
+	@DateTimeFormat(iso = ISO.DATE_TIME)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
 	private LocalDateTime dataHoraSaida; 
 	
 	@Column(name = "descricao")
@@ -47,6 +56,8 @@ public class Produtos extends AbstractAuditedModelBase{
 	private Float precoVenda;
 	
 	@Column(name = "validade_lote_data")
+	@DateTimeFormat(iso = ISO.DATE_TIME)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
 	private LocalDate validadeLoteData;
 	
 	//@Column(name = "categoria")

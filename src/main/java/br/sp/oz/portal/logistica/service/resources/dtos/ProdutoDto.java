@@ -35,6 +35,8 @@ public class ProdutoDto {
 	private Float precoVenda;
 	
 	@NotBlank
+	@DateTimeFormat(iso = ISO.DATE_TIME)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
 	private LocalDate validadeLoteData;
 	
 	private CategoriaProdutoDto categoriaProduto;
