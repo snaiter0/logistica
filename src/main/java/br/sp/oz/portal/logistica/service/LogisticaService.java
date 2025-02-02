@@ -7,6 +7,8 @@ import java.util.Set;
 
 import br.sp.oz.portal.logistica.controller.resources.request.AtualizarProdutosRequest;
 import br.sp.oz.portal.logistica.controller.resources.request.InserirProdutosRequest;
+import br.sp.oz.portal.logistica.service.resources.dtos.ExtratoProdutoDto;
+import br.sp.oz.portal.logistica.service.resources.dtos.ProdutoDto;
 import br.sp.oz.portal.logistica.service.resources.entitys.Produtos;
 
 public interface LogisticaService {
@@ -15,9 +17,9 @@ public interface LogisticaService {
 
 	Produtos atualizarProduto(AtualizarProdutosRequest attProdutos);
 
-	Set<Produtos> recuperarProdutos(LocalDateTime dataInicio, LocalDateTime dataFim);
+	Set<ExtratoProdutoDto> recuperarProdutos(LocalDateTime dataInicio, LocalDateTime dataFim);
 
-	Set<Produtos> recuperarProdutos(LocalDate dataDiaUnico);
+	Set<ProdutoDto> recuperarProdutos(LocalDate dataDiaUnico);
 
 	Set<Produtos> recuperarProdutos(LocalDateTime data);
 

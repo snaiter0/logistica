@@ -1,4 +1,4 @@
-package br.sp.oz.portal.logistica.service.impl;
+package br.sp.oz.portal.logistica.service.impl.utils;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -7,26 +7,25 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.Set;
 
-import org.springframework.stereotype.Component;
+import org.springframework.core.io.FileSystemResource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import lombok.extern.slf4j.Slf4j;
 
-@Component
 @Slf4j
 public class PythonExecutor {
-
-    public void executarConversaoCsv(Set<?> produtos) {
-    	log.warn("Tentativa de conversao de DTO para CSV.");
+	
+    public static FileSystemResource executarConversaoCsv(Set<?> produtos) {
+        log.warn("Tentativa de conversao de DTO para CSV.");
         try {
             // Converter a lista de produtos em JSON
             ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
             String produtosJson = objectMapper.writeValueAsString(produtos);
 
             // Caminho do script Python
-            String scriptPath = "C:\\Users\\snaiter\\eclipse-workspace\\logisticaApplication\\src\\main\\resources\\ProdutoDTO.py";
+            String scriptPath = new FileSystemResource("src/main/resources/scripts/python/ProdutoDTO.py").getFile().getAbsolutePath();
 
             // Caminho do executável Python
             String pythonPath = "C:\\Users\\snaiter\\AppData\\Local\\Programs\\Python\\Python313\\python.exe";
@@ -42,17 +41,37 @@ public class PythonExecutor {
                 writer.flush();
             }
 
-            // Capturar a saída do script Python
+            // Capturar a saída do script Python e procurar o nome do arquivo gerado
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line;
+            String nomeArquivo = null;  // Variável para armazenar o nome do arquivo
+
+            // Lê a saída do script e busca pelo nome do arquivo
             while ((line = reader.readLine()) != null) {
-                System.out.println(line); // Exibir a saída do script
+                log.info(line);  // Exibe a saída do script Python
+                if (line.contains("Arquivo CSV") && line.contains("gerado com sucesso")) {
+                    // Supondo que o log siga o formato: "Arquivo CSV 'caminho' gerado com sucesso!"
+                    // Extraímos o caminho do arquivo da linha
+                    nomeArquivo = line.split("'")[1]; // Pegando o caminho entre as aspas
+                    break;
+                }
             }
 
             int exitCode = process.waitFor();
             log.warn("Process finished with exit code: " + exitCode);
+
+            if (nomeArquivo != null) {
+                // Criar o FileSystemResource com o caminho do arquivo
+                FileSystemResource fileResource = new FileSystemResource(nomeArquivo);
+                return fileResource;
+            } else {
+                log.error("Arquivo não encontrado no log de saída.");
+                return null;
+            }
+
         } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+            log.error("Erro ao executar o script Python ou gerar o arquivo.", e);
+            return null;
         }
     }
 }
