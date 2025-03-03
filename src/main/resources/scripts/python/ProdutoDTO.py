@@ -5,8 +5,11 @@ import json
 import sys
 from datetime import datetime
 
-# Diretório base para salvar os arquivos CSV
-BASE_DIR = "src/main/resources/extrato_produto"
+# Obtém o caminho absoluto do diretório do script
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Define o diretório base para salvar os arquivos
+BASE_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, "../../extrato_produto"))
 
 def garantir_diretorio():
     """Garante que o diretório onde os arquivos serão salvos existe."""
@@ -76,7 +79,7 @@ if __name__ == "__main__":
         lista_dict = json.loads(entrada)
         print("Dados recebidos com sucesso. Processando...")
 
-        # Gerar o arquivo CSV com dados de produtos
+        # Gerar o arquivo CSV com dados de produto
         gerar_csv_dinamico(lista_dict, f'extrato_produtos_{data_atual}.csv')
 
     except json.JSONDecodeError as e:
